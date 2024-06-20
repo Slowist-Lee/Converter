@@ -35,7 +35,11 @@
                 'del': '[del]',
                 'del_end': '[/del]',
                 'color': '[color=blue]',
-                'color_end': '[/color]'
+                'color_end': '[/color]',
+                'img': '[img]',
+                'img_end': '[/img]',
+                'code':'[code]',
+                'code_end':'[/code]'
             };
 
             // 定义转换规则
@@ -49,7 +53,11 @@
                 'b_end': '**',
                 'u_end': '</u>',  // Markdown中下划线需要使用两个下划线包围内容
                 'del_end': '~~',
-                'color_end': '</font>'
+                'color_end': '</font>',
+                'img':'![](',
+                'img_end':')',
+                'code':'```',
+                'code_end':'```'
             };
 
             // 执行转换
