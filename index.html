@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UBB and Markdown Converter</title>
+    <style>
+        textarea, div {
+            width: 100%;
+            max-width: 600px;
+        }
+    </style>
+</head>
+<body>
+    <h1>UBB and Markdown Converter</h1>
+    <textarea id="inputArea" rows="10" cols="50" placeholder="请输入UBB或Markdown..."></textarea><br><br>
+    <button onclick="convertToMarkdown()">UBB to Markdown</button>
+    <button onclick="convertToUBB()">Markdown to UBB</button><br><br>
+    <h2>Output:</h2>
+    <div id="outputArea" style="white-space: pre-wrap;"></div>
+
+    <script>
+        function convertToMarkdown() {
+            // 获取输入的UBB内容
+            let ubbText = document.getElementById('inputArea').value;
+            
+            // 定义UBB标签和对应的转换规则
+            const tags = {
+                'quote': '[quote]',
+                'quote_end': '[/quote]',
+                'b': '[b]',
+                'b_end': '[/b]',
+                'u': '[u]',
+                'u_end': '[/u]',
+                'del': '[del]',
+                'del_end': '[/del]',
+                'color': '[color=blue]',
+                'color_end': '[/color]'
+            };
+
+            // 定义转换规则
+            const replacements = {
+                'quote': '>',
+                'b': '**',
+                'u': '<u>',
+                'del': '~~',
+                'color': '<font color="#0000FF">',
+                'quote_end': '',  // 去除[/quote]标记
+                'b_end': '**',
+                'u_end': '</u>',  // Markdown中下划线需要使用两个下划线包围内容
+                'del_end': '~~',
+                'color_end': '</font>'
+            };
+
+            // 执行转换
+            for (let ubb in replacements) {
+                ubbText = ubbText.split(tags[ubb]).join(replacements[ubb]);
+            }
+
+            // 单独处理url标签
+            ubbText = ubbText.split('[url=').join('[查看原帖](https://www.cc98.org/');
+            ubbText = ubbText.split('>>查看原帖<<').join('');
+            ubbText = ubbText.split('[/url]').join('');
+
+            // 显示转换后的结果
+            document.getElementById('outputArea').innerText = ubbText;
+        }
+
+        function convertToUBB() {
+            // 获取输入的Markdown内容
+            let markdownText = document.getElementById('inputArea').value;
+            
+            // 定义转换规则
+            markdownText = markdownText.replace(/\*\*(.*?)\*\*/g, '[b]$1[/b]');
+            markdownText = markdownText.replace(/<u>(.*?)<\/u>/g, '[u]$1[/u]');
+            markdownText = markdownText.replace(/~~(.*?)~~/g, '[del]$1[/del]');
+            markdownText = markdownText.replace(/<font color="#0000FF">(.*?)<\/font>/g, '[color=blue]$1[/color]');
+            markdownText = markdownText.replace(/^> (.*)$/gm, '[quote]$1[/quote]');
+            
+            // 处理url标签
+            markdownText = markdownText.replace(/\[查看原帖\]\(https:\/\/www\.cc98\.org\/(.*?)\)/g, '[url=$1]>>查看原帖<<[/url]');
+
+            // 显示转换后的结果
+            document.getElementById('outputArea').innerText = markdownText;
+        }
+    </script>
+</body>
+</html>
